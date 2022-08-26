@@ -9,7 +9,7 @@ public class Main {
         JFrame window = new JFrame(); // creating new frame (window)
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // window close on 'x' button
         window.setResizable(false); // can't resize the window
-        window.setTitle("Test"); // name of window (game name)
+        window.setTitle("Experimental Game Project"); // name of window (game name)
 
         GamePanel gamePanel = new GamePanel();
         window.add(gamePanel); // add game panel to window
