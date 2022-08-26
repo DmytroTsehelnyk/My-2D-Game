@@ -1,18 +1,20 @@
 package main;
 
+import entity.Player;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable {
 
     // SCREEN SETTINGS
-    final int originalTitleSize = 16; // default size of game characters (16x16px)
-    final int scale = 3; // make characters 48 pixels to fit modern screens
-    final int tileSize = originalTitleSize * scale; // make map size 48x48 pixels
-    final int maxScreenCol = 16; // 16 tiles horizontal
-    final int maxScreenRow = 12; // 16 tiles vertical - 4x3 game map (showed in screen)
-    final int screenWidth = tileSize * maxScreenCol; // 16*3 (768px)
-    final int screenHeight = tileSize * maxScreenRow; // 12*3 (576px)
+    final int originalTitleSize = 32; // default size of game characters (32x32px)
+    final int scale = 2; // make characters 64 pixels to fit modern screens
+    public final int tileSize = originalTitleSize * scale; // make map size 48x48 pixels
+    final int maxScreenCol = 14; // 14 tiles horizontal
+    final int maxScreenRow = 10; // 10 tiles vertical - 4x3 game map (showed in screen)
+    final int screenWidth = tileSize * maxScreenCol; // 64*14 (768px)
+    final int screenHeight = tileSize * maxScreenRow; // 64*10 (640px)
 
     // FPS
     double FPS = 60; // 60 Frames Per Second
@@ -20,6 +22,7 @@ public class GamePanel extends JPanel implements Runnable {
     // VARIABLES
     KeyHandler keyH = new KeyHandler(); // add keys to move character
     Thread gameThread; // method to add "time" to the game (make it running after start)
+    Player player = new Player(this, keyH);
     int playerX = 100; // player start position on the game map on X horizontal
     int playerY = 100; // player start position on the game map on Y vertical
     int playerSpeed = 4; // player speed on the game map
@@ -32,12 +35,15 @@ public class GamePanel extends JPanel implements Runnable {
         this.addKeyListener(keyH); // GamePanel will recognise the key input on keyboard
         this.setFocusable(true); // GamePanel can be "focused" to receive key input
     }
+
     // GAME PROCESS UPDATING
     public void startGameThread() {
         gameThread = new Thread(this); // automatically call Thread in GamePanel class
         gameThread.start(); // automatically call run method
     }
-    @Override // DELTA FPS Restriction
+
+    // FPS LOCK (DELTA METHOD)
+    @Override
     public void run() {
 
         double drawInterval = 1000000000/FPS; // screen will update every 0.016 seconds
@@ -67,24 +73,17 @@ public class GamePanel extends JPanel implements Runnable {
             }
         }
     }
-    // MOVEMENT CONTROL
+
+    // UPDATING
     public void update() { // as long as game is running, it updates info and call repaint
-        if(keyH.upPressed) {
-            playerY -= playerSpeed; // if Up pressed, move character up for 4 pixels
-        } else if (keyH.downPressed) {
-            playerY += playerSpeed; // if Down pressed, move character down for 4 pixels
-        } else if (keyH.leftPressed) {
-            playerX -= playerSpeed; // if Left pressed, move character left for 4 pixels
-        } else if (keyH.rightPressed) {
-            playerX += playerSpeed; // if Right pressed, move character right for 4 pixels
-        }
+        player.update();
     }
+
     // GRAPHICS
     public void paintComponent(Graphics g) { // will draw objects on the screen
         super.paintComponent(g); // call parent class (JPanel) to draw obj
         Graphics2D g2 = (Graphics2D) g; // changed graphics to 2D for better control over geometry
-        g2.setColor(Color.white);
-        g2.fillRect(playerX, playerY, tileSize, tileSize);
+        player.draw(g2);
         g2.dispose(); // dispose graphic and release system resources that it's using
     }
 }

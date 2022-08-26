@@ -2,6 +2,7 @@ package main;
 
 import javax.swing.*;
 
+// MAIN GAME CLASS
 public class Main {
     public static void main(String[] args) {
 
