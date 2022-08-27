@@ -35,7 +35,7 @@ public class KeyHandler implements KeyListener {
 
         int code = e.getKeyCode();
 
-        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP ) {
             upPressed = false; // check if W released
         }
         if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) {

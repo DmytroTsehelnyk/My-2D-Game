@@ -8,7 +8,7 @@ public class Main {
 
         // GAME WINDOW CREATION
         JFrame window = new JFrame(); // creating new frame (window)
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // window close on 'x' button
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // window close on 'xr' button
         window.setResizable(false); // can't resize the window
         window.setTitle("Experimental Game Project"); // name of window (game name)
 
