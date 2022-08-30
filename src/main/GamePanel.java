@@ -15,7 +15,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyH = new KeyHandler(); // add keys to move character
     Thread gameThread; // method to add "time" to the game (make it running after start)
     Player player = new Player(this, keyH);
-    public int animTick = 0, animIndex = 0, animSpeed = 24;
+    public int animTick = 0, animIndex = 0, animSpeed;
 
     // GAME MAP CONNECTING
     public GamePanel() {
@@ -74,40 +74,20 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-//    @Override
-//    public void run() {
-//
-//        double timesPerFrame = 1000000000.0/FPS; // screen will update every 0.016 seconds
-//        long lastTime = System.nanoTime();
-//        long currentTime = System.nanoTime();
-//        int frames = 0;
-//        long lastCheck = System.currentTimeMillis();
-//
-//        while (gameThread != null) { // as long as game open it will be running
-//            if (currentTime - lastTime >= timesPerFrame) {
-//                update();
-//                repaint();
-//                lastTime = currentTime;
-//                frames++;
-//            }
-//            if (System.currentTimeMillis() - lastCheck >= 1000) {
-//                lastCheck = System.currentTimeMillis();
-//                System.out.println("FPS " + frames);
-//                frames = 0;
-//            }
-//        }
-//    }
-
     // UPDATING
     public void update() { // as long as game is running, it updates info and call repaint
         player.update();
     }
     private void updateAnimationTick() {
         animTick++;
-        if(animTick >= animSpeed) {
+        if (animTick >= animSpeed) {
             animTick = 0;
             animIndex++;
-            if(animIndex >= player.idleAnim.length){
+            if (animIndex >= player.idleAnim.length){
+                animIndex = 0;
+            } else if (animIndex >= player.walkingAnim.length){
+                animIndex = 0;
+            } else if (animIndex >= player.runningAnim.length){
                 animIndex = 0;
             }
         }

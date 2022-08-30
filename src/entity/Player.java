@@ -13,8 +13,10 @@ import java.util.Objects;
 public class Player extends Entity {
     GamePanel gp; // activate GamePanel class
     KeyHandler keyH; // activate KeyHandler class
-    public BufferedImage img;
+    public BufferedImage owl_idle, owl_walking, owl_running;
     public BufferedImage[] idleAnim;
+    public BufferedImage[] walkingAnim;
+    public BufferedImage[] runningAnim;
 
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
@@ -24,12 +26,15 @@ public class Player extends Entity {
     public void setDefaultValues() {
         xDelta = 100; // start position X (vertical)
         yDelta = 100; // start position Y (horizontal)
-        speed = 6;
     }
 
     // MOVEMENT CONTROL
     public void update() { // as long as game is running, it updates info and call repaint
-        if(keyH.upPressed) {
+        if (keyH.shiftPressed) {
+            speed = 10; // if Shift pressed + key, character runs
+        } else speed = 4;
+
+        if (keyH.upPressed) {
             yDelta -= speed; // if Up pressed, move character up for 4 pixels
         } else if (keyH.downPressed) {
             yDelta += speed; // if Down pressed, move character down for 4 pixels
@@ -42,14 +47,20 @@ public class Player extends Entity {
 
     // LOAD PLAYER CHARACTER IMAGE
     public void importImg() {
-        InputStream is = getClass().getResourceAsStream("/player.png");
+        InputStream is1 = getClass().getResourceAsStream("/owl_idle.png");
+        InputStream is2 = getClass().getResourceAsStream("/owl_walking.png");
+        InputStream is3 = getClass().getResourceAsStream("/owl_running.png");
         try  {
-            img = ImageIO.read(Objects.requireNonNull(is));
+            owl_idle = ImageIO.read(Objects.requireNonNull(is1));
+            owl_walking = ImageIO.read(Objects.requireNonNull(is2));
+            owl_running = ImageIO.read(Objects.requireNonNull(is3));
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
-                Objects.requireNonNull(is).close();
+                Objects.requireNonNull(is1).close();
+                Objects.requireNonNull(is2).close();
+                Objects.requireNonNull(is3).close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -58,15 +69,37 @@ public class Player extends Entity {
 
     // MAKE ANIMATION FOR IDLE POSITION
     public void loadAnimations() {
-        idleAnim = new BufferedImage[6];
+
+        idleAnim = new BufferedImage[4];
 
         for(int i = 0; i < idleAnim.length; i++) {
-            idleAnim[i] = img.getSubimage(i * 32, 0,64,64);
+            idleAnim[i] = owl_idle.getSubimage(i * 32, 0,32,32);
+        }
+
+        walkingAnim = new BufferedImage[6];
+
+        for(int i = 0; i < walkingAnim.length; i++) {
+            walkingAnim[i] = owl_walking.getSubimage(i * 32, 0,32,32);
+        }
+
+        runningAnim = new BufferedImage[6];
+
+        for(int i = 0; i < runningAnim.length; i++) {
+            runningAnim[i] = owl_running.getSubimage(i * 32, 0,32,32);
         }
     }
 
     // CHARACTER GRAPHICS
     public void draw (Graphics2D g2D) {
-        g2D.drawImage(idleAnim[gp.animIndex], xDelta, yDelta,256,256, null);
+        if (!keyH.shiftPressed && (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed)) {
+            g2D.drawImage(walkingAnim[gp.animIndex], xDelta, yDelta,128,128, null);
+            gp.animSpeed = 20;
+        } else if (keyH.shiftPressed && (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed)) {
+            g2D.drawImage(runningAnim[gp.animIndex], xDelta, yDelta,128,128, null);
+            gp.animSpeed = 15;
+        } else {
+            g2D.drawImage(idleAnim[gp.animIndex], xDelta, yDelta,128,128, null);
+            gp.animSpeed = 30;
+        }
     }
 }
